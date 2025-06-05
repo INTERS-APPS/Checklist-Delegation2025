@@ -200,10 +200,16 @@ function DelegationDataPage() {
     return filtered.sort(sortDateWise)
   }, [accountData, debouncedSearchTerm, sortDateWise])
 
-  // Simplified history filtering (removed member filtering)
+  // Updated history filtering with user filter based on column H
   const filteredHistoryData = useMemo(() => {
     return historyData
       .filter((item) => {
+        // User filter: For non-admin users, check column H (col7) matches username
+        const userMatch = userRole === "admin" || 
+          (item["col7"] && item["col7"].toLowerCase() === username.toLowerCase())
+        
+        if (!userMatch) return false
+
         const matchesSearch = debouncedSearchTerm
           ? Object.values(item).some(
               (value) => value && value.toString().toLowerCase().includes(debouncedSearchTerm.toLowerCase()),
@@ -239,7 +245,7 @@ function DelegationDataPage() {
         if (!dateB) return -1
         return dateB.getTime() - dateA.getTime()
       })
-  }, [historyData, debouncedSearchTerm, startDate, endDate, parseDateFromDDMMYYYY])
+  }, [historyData, debouncedSearchTerm, startDate, endDate, parseDateFromDDMMYYYY, userRole, username])
 
   // Optimized data fetching with parallel requests
   const fetchSheetData = useCallback(async () => {
@@ -302,12 +308,16 @@ function DelegationDataPage() {
 
                 const rowValues = row.c ? row.c.map((cell) => (cell && cell.v !== undefined ? cell.v : "")) : []
 
+                // Map all columns including column H (col7) for user filtering and column I (col8) for Task
                 rowData["col0"] = rowValues[0] ? parseGoogleSheetsDate(String(rowValues[0])) : ""
                 rowData["col1"] = rowValues[1] || ""
                 rowData["col2"] = rowValues[2] || ""
                 rowData["col3"] = rowValues[3] || ""
                 rowData["col4"] = rowValues[4] || ""
                 rowData["col5"] = rowValues[5] || ""
+                rowData["col6"] = rowValues[6] || ""
+                rowData["col7"] = rowValues[7] || "" // Column H - User name
+                rowData["col8"] = rowValues[8] || "" // Column I - Task
 
                 return rowData
               })
@@ -585,6 +595,7 @@ function DelegationDataPage() {
               }
             }
 
+            // Updated to include username in column H and task description in column I when submitting to history
             const newRowData = [
               todayFormatted,
               item["col1"] || "",
@@ -592,6 +603,9 @@ function DelegationDataPage() {
               nextTargetDate[id] || "",
               remarksData[id] || "",
               imageUrl,
+              "", // Column G
+              username, // Column H - Store the logged-in username
+              item["col5"] || "", // Column I - Task description from col5
             ]
 
             const insertFormData = new FormData()
@@ -778,6 +792,9 @@ function DelegationDataPage() {
                         Task ID
                       </th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Task
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                         Status
                       </th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -789,6 +806,11 @@ function DelegationDataPage() {
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                         Uploaded Image
                       </th>
+                      {userRole === "admin" && (
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          User
+                        </th>
+                      )}
                     </tr>
                   </thead>
                   <tbody className="bg-white divide-y divide-gray-200">
@@ -800,6 +822,11 @@ function DelegationDataPage() {
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
                             <div className="text-sm text-gray-900">{history["col1"] || "—"}</div>
+                          </td>
+                          <td className="px-6 py-4">
+                            <div className="text-sm text-gray-900 max-w-xs" title={history["col8"]}>
+                              {history["col8"] || "—"}
+                            </div>
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
                             <span
@@ -815,7 +842,7 @@ function DelegationDataPage() {
                             </span>
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
-                            <div className="text-sm text-gray-900">{history["col3"] || "—"}</div>
+                            <div className="text-sm text-gray-900">{formatDateForDisplay(history["col3"]) || "—"}</div>
                           </td>
                           <td className="px-6 py-4">
                             <div className="text-sm text-gray-900 max-w-xs" title={history["col4"]}>
@@ -841,11 +868,16 @@ function DelegationDataPage() {
                               <span className="text-gray-400">No attachment</span>
                             )}
                           </td>
+                          {userRole === "admin" && (
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <div className="text-sm text-gray-900">{history["col7"] || "—"}</div>
+                            </td>
+                          )}
                         </tr>
                       ))
                     ) : (
                       <tr>
-                        <td colSpan={6} className="px-6 py-4 text-center text-gray-500">
+                        <td colSpan={userRole === "admin" ? 8 : 7} className="px-6 py-4 text-center text-gray-500">
                           {searchTerm || startDate || endDate
                             ? "No historical records matching your filters"
                             : "No completed records found"}
