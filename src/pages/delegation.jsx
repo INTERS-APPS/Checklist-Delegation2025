@@ -828,8 +828,11 @@ function DelegationDataPage() {
                           <td className="px-6 py-4 whitespace-nowrap">
                             <div className="text-sm text-gray-900">{history["col1"] || "—"}</div>
                           </td>
-                          <td className="px-6 py-4">
-                            <div className="text-sm text-gray-900 max-w-xs" title={history["col8"]}>
+                          <td className="px-6 py-4 min-w-[250px]">
+                            <div
+                              className="text-sm text-gray-900 max-w-md whitespace-normal break-words"
+                              title={history["col8"]}
+                            >
                               {history["col8"] || "—"}
                             </div>
                           </td>
@@ -849,8 +852,11 @@ function DelegationDataPage() {
                           <td className="px-6 py-4 whitespace-nowrap">
                             <div className="text-sm text-gray-900">{formatDateForDisplay(history["col3"]) || "—"}</div>
                           </td>
-                          <td className="px-6 py-4">
-                            <div className="text-sm text-gray-900 max-w-xs" title={history["col4"]}>
+                          <td className="px-6 py-4 bg-purple-50 min-w-[200px]">
+                            <div
+                              className="text-sm text-gray-900 max-w-md whitespace-normal break-words"
+                              title={history["col4"]}
+                            >
                               {history["col4"] || "—"}
                             </div>
                           </td>
@@ -987,8 +993,11 @@ function DelegationDataPage() {
                           <td className="px-6 py-4 whitespace-nowrap">
                             <div className="text-sm text-gray-900">{account["col4"] || "—"}</div>
                           </td>
-                          <td className="px-6 py-4">
-                            <div className="text-sm text-gray-900 max-w-xs truncate" title={account["col5"]}>
+                          <td className="px-6 py-4 min-w-[250px]">
+                            <div
+                              className="text-sm text-gray-900 max-w-md whitespace-normal break-words"
+                              title={account["col5"]}
+                            >
                               {account["col5"] || "—"}
                             </div>
                           </td>

@@ -849,7 +849,10 @@ function AccountDataPage() {
                             <div className="text-sm text-gray-900">{history["col4"] || "—"}</div>
                           </td>
                           <td className="px-6 py-4">
-                            <div className="text-sm text-gray-900 max-w-xs" title={history["col5"]}>
+                            <div
+                              className="text-sm text-gray-900 max-w-xs whitespace-normal break-words"
+                              title={history["col5"]}
+                            >
                               {history["col5"] || "—"}
                             </div>
                           </td>
@@ -888,7 +891,10 @@ function AccountDataPage() {
                             </span>
                           </td>
                           <td className="px-6 py-4 bg-purple-50">
-                            <div className="text-sm text-gray-900 max-w-xs" title={history["col13"]}>
+                            <div
+                              className="text-sm text-gray-900 max-w-xs whitespace-normal break-words"
+                              title={history["col13"]}
+                            >
                               {history["col13"] || "—"}
                             </div>
                           </td>
@@ -1005,7 +1011,10 @@ function AccountDataPage() {
                             <div className="text-sm text-gray-900">{account["col4"] || "—"}</div>
                           </td>
                           <td className="px-6 py-4">
-                            <div className="text-sm text-gray-900 max-w-xs truncate" title={account["col5"]}>
+                            <div
+                              className="text-sm text-gray-900 max-w-xs whitespace-normal break-words"
+                              title={account["col5"]}
+                            >
                               {account["col5"] || "—"}
                             </div>
                           </td>
