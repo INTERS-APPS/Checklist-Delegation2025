@@ -1024,7 +1024,7 @@ function DelegationDataPage() {
                           <td className={`px-6 py-4 whitespace-nowrap ${!account["col17"] ? "bg-indigo-50" : ""}`}>
                             <input
                               type="date"
-                              disabled={!isSelected || (statusData[account._id] !== "Extend date" && statusData[account._id] !== "Reschedule")}
+                              disabled={!isSelected || (statusData[account._id] !== "Extend date")}
                               value={
                                 nextTargetDate[account._id]
                                   ? (() => {
